@@ -1,0 +1,71 @@
+  {% include 'nav.html' %}
+        <div class="container">
+            <h2 class="text-center"> DIY Visualization</h2>
+              <div class="container">
+                  <div class="row">
+                <div class="col-6">
+                    <!-- form user info -->
+                    <div class="card card-outline-secondary">
+                        <div class="card-header">
+                            <h3 class="mb-0">Visualization Input</h3>
+                        </div>
+                        <div class="card-body">
+                            <form class="form" role="form" autocomplete="off" action="/DIY_visualization" method="POST" enctype="multipart/form-data">
+                                <fieldset>
+                                    <div class="container">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                      <input type="radio" id="bar" name="type" class="custom-control-input" value="bar">
+                                      <label class="custom-control-label" for="bar">Bar</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                      <input type="radio" id="line" name="type" class="custom-control-input" value="line">
+                                      <label class="custom-control-label" for="line">Line</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                      <input type="radio" id="circle" name="type" class="custom-control-input" value="circle">
+                                      <label class="custom-control-label" for="circle">Circle</label>
+                                    </div>
+
+                                    </div>
+                                    <div class="container mb-2">
+                                        <div class="custom-file">
+                                          <input type="file" class="custom-file-input" id="file" name="file">
+                                          <label class="custom-file-label" for="file">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-secondary btn-lg float-right">Visualize</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /form user info -->
+
+                </div>
+                <div class="col-6 ">
+                    <div class="card card-outline-secondary">
+                        <div class="card-header">
+                            <h3 class="mb-0">Visualization Result</h3>
+                        </div>
+
+                        <div class="card-body">
+                            <canvas id="graph" width="600" height="400">
+
+                            </canvas>
+                        </div>
+
+                  </div>
+              </div>
+
+        </div>
+        </div>
+        </div>
+  {% include 'footer.html' %}
+   <script>
+   let config = {{jsondata|safe}}
+        window.onload = function() {
+			var ctx = document.getElementById('graph').getContext('2d');
+			window.myGraph = new Chart(ctx, config);
+		};
+</script>
+  </body>
+</html>

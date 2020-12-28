@@ -1,0 +1,389 @@
+  {% include 'nav.html' %}
+
+    <div class="container">
+                <div class="row">
+            <table class="col-12 responsible ">
+                <thead>
+                    <tr>
+                        <th>Total Tweets</th>
+                        <th>Total Users</th>
+                        <th>Total Positive</th>
+                        <th>Total Neutral</th>
+                        <th>Total Negative</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="total_tweets">{{total_tweets}}</td>
+                        <td id="total_users">{{total_users}}</td>
+                        <td id="total_positive">{{total_positive}}</td>
+                        <td id="total_neutral">{{total_neutral}}</td>
+                        <td id="total_negative">{{total_negative}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+  <div class="container mb-2 mt-2">
+        <div class="ui fluid action input">
+            <div class="ui fluid multiple search selection dropdown">
+                <input type="hidden" id="keywords"> <i class="dropdown icon"></i>
+                <div class="default text">twitter</div>
+                <div class="menu"></div>
+            </div>
+          <button class="ui button" id='stream' onclick="start_custom_stream();">Start Stream</button>
+        </div>
+  </div>
+          <div class="container">
+              <div class="row">
+              <div class="col-6">
+                             <h2> Sentiment Analysis per minute</h2>
+                  <div class="container">
+                <div class="progress mb-2 mt-2" style="height:30px;">
+                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{positive}}%" aria-valuenow="{{positive}}" aria-valuemin="0" aria-valuemax="100" id="positive">{{positive}}%</div>
+                </div>
+                <div class="progress  mb-2" style="height:30px;">
+                  <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{neutral}}%" aria-valuenow="{{neutral}}" aria-valuemin="0" aria-valuemax="100" id="neutral">{{neutral}}%</div>
+                </div>
+                <div class="progress  mb-2" style="height:30px;">
+                  <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: {{negative}}%" aria-valuenow="{{negative}}" aria-valuemin="0" aria-valuemax="100" id="negative">{{negative}}%</div>
+                </div>
+            </div>
+              </div>
+              <div class="col-6">
+                             <h2> Sentiment Analysis per 10 seconds</h2>
+                  <div class="container">
+                <div class="progress mb-2 mt-2" style="height:30px;">
+                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{positive}}%" aria-valuenow="{{positive}}" aria-valuemin="0" aria-valuemax="100" id="positive10">{{positive}}%</div>
+                </div>
+                <div class="progress  mb-2" style="height:30px;">
+                  <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{neutral}}%" aria-valuenow="{{neutral}}" aria-valuemin="0" aria-valuemax="100" id="neutral10">{{neutral}}%</div>
+                </div>
+                <div class="progress  mb-2" style="height:30px;">
+                  <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: {{negative}}%" aria-valuenow="{{negative}}" aria-valuemin="0" aria-valuemax="100" id="negative10">{{negative}}%</div>
+                </div>
+            </div>
+              </div>
+</div>
+        </div>
+  <div class="container">
+        <div class="row">
+        <div class="col-6">
+          <div class="row">
+            <h3>Per Minute Graph</h3>
+              <div style="width:95%;">
+                  <canvas id="canvas"></canvas>
+              </div>
+          </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <h3>Per 10 Seconds Graph</h3>
+              <div style="width:95%;">
+                  <canvas id="canvas10"></canvas>
+              </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+ <!-- Graphs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script>
+    $('.ui.dropdown').dropdown({
+        allowAdditions: true
+    });
+
+</script>
+  <script>
+      function start_custom_stream(){
+      let tracks = $('#keywords').val();
+      $('#stream').prop('disabled','disabled')
+
+      console.log(tracks)
+              $.ajax({
+              url: "/custom_stream_start",
+              data:{'tracks':tracks},
+              success: function(resp){
+                    $('#stream').prop('disabled','')
+                    console.log(resp);
+                    clearInterval(getCountInt);
+                    clearInterval(getCount10Int);
+              },
+              error:function(resp){
+                    $('#stream').prop('disabled','')
+                    console.log(resp);
+                    clearInterval(getCountInt);
+                    clearInterval(getCount10Int);
+
+              }
+          });
+            getCountInt=setInterval(getCount, 5000);
+            getCount10Int=setInterval(getCount10, 5000);
+         setInterval(getTotal, 5000);
+      setInterval(getTop100, 5000);
+        }
+  </script>
+    <script>
+    /* Code for Graph generation */
+    var k=0;
+    var config = {
+			type: 'line',
+			data: {
+			    labels:[],
+				datasets: [{
+					label: "Users",
+					backgroundColor:"red",
+					borderColor:  "orange",
+					data: [],
+					fill: false,
+					}, {
+					label: "Tweets",
+					fill: false,
+					backgroundColor: "blue",
+					borderColor: "blue",
+					data: [],
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Live Stream Tweets and Users Count'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+						}
+					}]
+				}
+			}
+		};
+
+    /* code for 2nd graph */
+    var k10=0;
+    var config10 = {
+			type: 'line',
+			data: {
+			    labels:[],
+				datasets: [{
+					label: "Users",
+					backgroundColor:"red",
+					borderColor:  "orange",
+					data: [],
+					fill: false,
+					}, {
+					label: "Tweets",
+					fill: false,
+					backgroundColor: "blue",
+					borderColor: "blue",
+					data: [],
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Live Stream Tweets and Users Count'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+						}
+					}]
+				}
+			}
+		};
+
+    /*  create the graph on html elemnt */
+		window.onload = function() {
+			var ctx10 = document.getElementById('canvas10').getContext('2d');
+			window.myLine10 = new Chart(ctx10, config10);
+
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+
+
+  </script>
+
+    <script>
+    /* get count ajax function */
+    function getCount(){
+        $.ajax({
+              url: "/mycount",
+              success: function(resp){
+                console.log(resp);
+                if (config.data.datasets.length > 0) {
+                  config.data.labels.push(k);
+					config.data.datasets[0].data.push(resp["tweets_count"]);
+					config.data.datasets[1].data.push(resp["users_count"]);
+    				window.myLine.update();
+			      k++;
+			    }
+                $('#positive').html(resp["positive"]);
+                $('#neutral').html(resp["neutral"]);
+                $('#negative').html(resp["negative"]);
+
+                $('#positive').css({"width": resp['positive']+"%"})
+                $('#positive').attr("aria-valuenow",resp['positive'])
+                $('#positive').html(resp["positive"]);
+                $('#neutral').css({"width": resp['neutral']+"%"})
+                $('#neutral').attr("aria-valuenow",resp['neutral'])
+                $('#neutral').html(resp["neutral"]);
+                $('#negative').css({"width": resp['negative']+"%"})
+                $('#negative').attr("aria-valuenow",resp['negative'])
+                $('#negative').html(resp["negative"]);
+
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    /* get count for 10 secoonds ajax function */
+
+    function getCount10(){
+        $.ajax({
+              url: "/mycount_ten",
+              success: function(resp){
+                console.log(resp);
+                if (config10.data.datasets.length > 0) {
+                  config10.data.labels.push(k);
+					config10.data.datasets[0].data.push(resp["tweets_count"]);
+					config10.data.datasets[1].data.push(resp["users_count"]);
+    				window.myLine10.update();
+			      k10++;
+			    }
+			    $('#positive10').html(resp["positive"]);
+                $('#neutral10').html(resp["neutral"]);
+                $('#negative10').html(resp["negative"]);
+
+                $('#positive10').css({"width": resp['positive']+"%"})
+                $('#positive10').attr("aria-valuenow",resp['positive'])
+                $('#positive10').html(resp["positive"]);
+                $('#neutral10').css({"width": resp['neutral']+"%"})
+                $('#neutral10').attr("aria-valuenow",resp['neutral'])
+                $('#neutral10').html(resp["neutral"]);
+                $('#negative10').css({"width": resp['negative']+"%"})
+                $('#negative10').attr("aria-valuenow",resp['negative'])
+                $('#negative10').html(resp["negative"]);
+
+
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+        /* get total count ajax function */
+
+    function getTotal(){
+        $.ajax({
+              url: "/mytotal",
+              success: function(resp){
+                console.log(resp);
+                $('#total_tweets').html(resp["total_tweets"]);
+                $('#total_users').html(resp["total_users"]);
+                $('#total_positive').html(resp["total_positive"]);
+                $('#total_neutral').html(resp["total_neutral"]);
+                $('#total_negative').html(resp["total_negative"]);
+
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    /* get top 100 tweet and users ajax function*/
+    function getTop100(){
+        $.ajax({
+              url: "/mytop100",
+              success: function(resp){
+                console.log(resp);
+                let tweets = resp.tweets
+                let html="";
+                for(i=0;i<tweets.length;i++){
+                    html+='<h3 class="btn btn-secondary tweet_text">'+tweets[i][0].text+'</h3>';
+                }
+                $('#tweetbox').html(html);
+                let users = resp.users
+                html="";
+                for(i=0;i<users.length;i++){
+                    html+='<h3 class="btn btn-secondary user_name">'+users[i][0].name+'</h3>';
+                }
+                $('#userbox').html(html);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+
+    /* on click of stream toggle button fire the streaming*/
+      $('#stream').on('click',function(){
+        let getCountInt=0;
+        let getCount10Int=0;
+
+        $.ajax({
+              url: "/custom_stream_start",
+              success: function(resp){
+                    console.log(resp);
+                    clearInterval(getCountInt);
+                    clearInterval(getCount10Int);
+              },
+              error:function(resp){
+                console.log(resp);
+                    $('#stream').prop('checked',false)
+                    clearInterval(getCountInt);
+                    clearInterval(getCount10Int);
+
+              }
+          });
+            getCountInt=setInterval(getCount, 5000);
+            getCount10Int=setInterval(getCount10, 5000);
+      });
+      setInterval(getTotal, 5000);
+      setInterval(getTop100, 5000);
+
+    </script>
+  </body>
+</html>

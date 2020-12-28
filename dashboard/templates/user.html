@@ -1,0 +1,451 @@
+  {% include 'nav.html' %}
+    <link rel="stylesheet" href="dashboard/static/css/user.css">
+    <div class="container">
+         <div class="container main-secction">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12 image-section">
+                <img src="{{user.profile_banner_url}}">
+            </div>
+            <div class="row user-left-part">
+                <div class="col-md-3 col-sm-3 col-xs-12 user-profil-part pull-left">
+                    <div class="row ">
+                        <div class="col-md-12 col-md-12-sm-12 col-xs-12 user-image text-center">
+                            <img src="{{user.profile_image_url}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row user-left-part">
+                <div class="col-md-3 col-sm-3 col-xs-12 user-profil-part pull-left">
+                    <div class="row ">
+
+                        <div class="row user-detail-row">
+                            <div class="col-md-12 col-sm-12 user-detail-section2 pull-left">
+                            <div class="border"></div>
+                                <p>FOLLOWER</p>
+                                <span>{{user.followers_count}}</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 user-detail-section2 pull-right">
+                                <div class="border"></div>
+                                <p>Friends</p>
+                                <span>{{user.friends_count}}</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 user-detail-section2 pull-right">
+                                <div class="border"></div>
+                                <p>Listed </p>
+                                <span>{{user.listed_count}}</span>
+                            </div>
+
+                            <div class="col-md-12 col-sm-12 user-detail-section2 pull-right">
+                                <div class="border"></div>
+                                <p>Favourite </p>
+                                <span>{{user.favourites_count}}</span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 user-detail-section2 pull-right">
+                                <div class="border"></div>
+                                <p>Created at </p>
+                                <span>{{user.created_at}}</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 col-sm-9 col-xs-12 pull-right profile-right-section">
+                    <div class="row profile-right-section-row">
+                        <div class="col-md-12 profile-header">
+                            <div class="row">
+                                <div class="col-md-8 col-sm-6 col-xs-6 profile-header-section1 pull-left">
+                                    <h1>{{user.name}}</h1>
+                                    <p>@{{user.screen_name}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12  profile-tag-section text-center">
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-4 profile-tag">
+                                            <a href="#"><i class="fa fa-calendar-check-o" aria-hidden="true"></i></a>
+                                        <div class="ui attached message">
+                                              <div class="header">
+                                                Retweets of me
+                                              </div>
+                                        </div>
+                                            {% for tweet in retweets %}
+                                          <div class="ui message tweet_text">
+                                                <div class="header">
+                                                    <div class="tweet">@{{tweet.user.screen_name}}</div>
+                                                </div>
+                                                <div class="body">
+                                                    <div><p>{{tweet.text}}</p></div>
+                                                </div>
+                                            <div class="row">
+                                                <button class="ui mini icon button" onclick="reply('{{tweet.id}}');">
+                                                  <i class="reply icon"></i>
+                                                </button>
+                                                <button class="ui mini icon button" onclick="retweet('{{tweet.id}}');">
+                                                  <i class="retweet icon"></i>
+                                                </button>
+                                                <button class="ui mini icon button" onclick="like('{{tweet.id}}');">
+                                                  <i class="heart icon"></i>
+                                                </button>
+                                            </div>
+                                           </div>
+                                        {% endfor %}
+
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 profile-tag">
+                                            <a href="#"><i class="fa fa-calendar-check-o" aria-hidden="true"></i></a>
+            <div class="ui attached message">
+                  <div class="header">
+                Home Timeline
+                  </div>
+            </div>
+                                            {% for tweet in home_timeline %}
+                                          <div class="ui message tweet_text">
+                                                <div class="header">
+                                                    <div class="tweet">@{{tweet.user.screen_name}}</div>
+                                                </div>
+                                                <div class="body">
+                                                    <div><p>{{tweet.text}}</p></div>
+                                                </div>
+                                            <div class="row">
+                                                <button class="ui mini icon button" onclick="reply('{{tweet.id}}');">
+                                                  <i class="reply icon"></i>
+                                                </button>
+                                                <button class="ui mini icon button" onclick="retweet('{{tweet.id}}');">
+                                                  <i class="retweet icon"></i>
+                                                </button>
+                                                <button class="ui mini icon button" onclick="like('{{tweet.id}}');">
+                                                  <i class="heart icon"></i>
+                                                </button>
+                                            </div>
+                                           </div>
+                                        {% endfor %}
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 profile-tag">
+                                            <a href="#"><i class="fa fa-calendar-check-o" aria-hidden="true"></i></a>
+                            <div class="ui attached message">
+                  <div class="header">
+                            User Timeline
+                  </div>
+            </div>
+                                            {% for tweet in user_timeline %}
+                                          <div class="ui message tweet_text">
+                                                <div class="header">
+                                                    <div class="tweet">@{{tweet.user.screen_name}}</div>
+                                                </div>
+                                                <div class="body">
+                                                    <div><p>{{tweet.text}}</p></div>
+                                                </div>
+                                            <div class="row">
+                                                <button class="ui mini icon button" onclick="reply('{{tweet.id}}');">
+                                                  <i class="reply icon"></i>
+                                                </button>
+                                                <button class="ui mini icon button" onclick="retweet('{{tweet.id}}');">
+                                                  <i class="retweet icon"></i>
+                                                </button>
+                                                <button class="ui mini icon button" onclick="like('{{tweet.id}}');">
+                                                  <i class="heart icon"></i>
+                                                </button>
+                                            </div>
+                                           </div>
+                                        {% endfor %}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        <script>
+    /* get count ajax function */
+    function reply(id){
+        let text = prompt("Please Enter your reply")
+        console.log(id);
+        $.ajax({
+              url: "/reply/"+id,
+              data:{'text':text},
+              success: function(resp){
+                location.reload(true)
+                console.log(resp);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    function retweet(id){
+        $.ajax({
+              url: "/retweet/"+id,
+              success: function(resp){
+                location.reload(true)
+                console.log(resp);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    function like(id){
+        $.ajax({
+              url: "/like/"+id,
+              success: function(resp){
+                location.reload(true)
+                console.log(resp);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    function update_status(){
+        let text = $('#status_text').val()
+        console.log(text);
+        $.ajax({
+              url: "/update_status",
+              data:{'text':text},
+              success: function(resp){
+                location.reload(true)
+                console.log(resp);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    </script>
+
+
+ <!-- Graphs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script>
+    var k=0;
+    var config = {
+			type: 'line',
+			data: {
+			    labels:[],
+				datasets: [{
+					label: "Users",
+					backgroundColor:"red",
+					borderColor:  "orange",
+					data: [],
+					fill: false,
+					}, {
+					label: "Tweets",
+					fill: false,
+					backgroundColor: "blue",
+					borderColor: "blue",
+					data: [],
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Live Stream Tweets and Users Count'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+						}
+					}]
+				}
+			}
+		};
+
+
+    var k10=0;
+    var config10 = {
+			type: 'line',
+			data: {
+			    labels:[],
+				datasets: [{
+					label: "Users",
+					backgroundColor:"red",
+					borderColor:  "orange",
+					data: [],
+					fill: false,
+					}, {
+					label: "Tweets",
+					fill: false,
+					backgroundColor: "blue",
+					borderColor: "blue",
+					data: [],
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Live Stream Tweets and Users Count'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+						}
+					}]
+				}
+			}
+		};
+
+		window.onload = function() {
+			var ctx10 = document.getElementById('canvas10').getContext('2d');
+			window.myLine10 = new Chart(ctx10, config10);
+
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+
+
+  </script>
+
+    <script>
+    function getCount(){
+        $.ajax({
+              url: "/count",
+              success: function(resp){
+                console.log(resp);
+                if (config.data.datasets.length > 0) {
+                  config.data.labels.push(k);
+					config.data.datasets[0].data.push(resp["tweets_count"]);
+					config.data.datasets[1].data.push(resp["users_count"]);
+    				window.myLine.update();
+			      k++;
+			    }
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    function getCount10(){
+        $.ajax({
+              url: "/count_ten",
+              success: function(resp){
+                console.log(resp);
+                if (config10.data.datasets.length > 0) {
+                  config10.data.labels.push(k);
+					config10.data.datasets[0].data.push(resp["tweets_count"]);
+					config10.data.datasets[1].data.push(resp["users_count"]);
+    				window.myLine10.update();
+			      k10++;
+			    }
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    function getTotal(){
+        $.ajax({
+              url: "/total",
+              success: function(resp){
+                console.log(resp);
+                $('#total_tweets').html(resp["tweets_count"]);
+                $('#total_users').html(resp["users_count"]);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    function getTop100(){
+        $.ajax({
+              url: "/top100",
+              success: function(resp){
+                console.log(resp);
+                let tweets = resp.tweets
+                let html="";
+                for(i=0;i<tweets.length;i++){
+                    html+='<h3 class="btn btn-secondary">'+tweets[i][0].text+'</h3>';
+                }
+                $('#tweetbox').html(html);
+                let users = resp.users
+                html="";
+                for(i=0;i<users.length;i++){
+                    html+='<h3 class="btn btn-secondary">'+users[i][0].name+'</h3>';
+                }
+                $('#userbox').html(html);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+
+      $('#stream').on('click',function(){
+        let getCountInt=0;
+        let getCount10Int=0;
+
+        if($(this).prop('checked')){
+        $.ajax({
+              url: "/stream",
+              success: function(resp){
+                    $('#stream').prop('checked',false)
+                    console.log(resp);
+                    clearInterval(getCountInt);
+                    clearInterval(getCount10Int);
+              },
+              error:function(resp){
+                console.log(resp);
+                    $('#stream').prop('checked',false)
+                    clearInterval(getCountInt);
+                    clearInterval(getCount10Int);
+
+              }
+          });
+            getCountInt=setInterval(getCount, 5000);
+            getCount10Int=setInterval(getCount10, 5000);
+        }
+      });
+      setInterval(getTotal, 5000);
+      setInterval(getTop100, 5000);
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+{
+			"type": "pie",
+			"data": {
+				"datasets": [{
+					"data": [1,2,3,4,5],
+					"backgroundColor": [
+						"red",
+						"orange",
+						"yellow",
+						"green",
+						"blue"
+					],
+					"label": "Dataset 1"
+				}],
+				"labels": [
+					"Red",
+					"Orange",
+					"Yellow",
+					"Green",
+					"Blue"
+				]
+			},
+			"options": {
+				"responsive": true
+			}
+		}

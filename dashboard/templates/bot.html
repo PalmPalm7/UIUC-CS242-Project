@@ -1,0 +1,144 @@
+{% include 'nav.html' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+        <div class="ui attached message">
+          <div class="header">
+            Welcome to Twitter Bot!
+          </div>
+          <p>Post new tweet</p>
+        </div>
+        <form class="ui form attached fluid segment">
+          <div class="field">
+            <label>Tweet:</label>
+              <textarea placeholder="Tweet" type="text" id='status_text'></textarea>
+          </div>
+          <button class="ui blue submit button" onclick="update_status();">Submit</button>
+        </form>
+             <hr>
+                {% for tweet in tweets%}
+                  <div class="ui message tweet_text">
+                        <div class="header">
+                            <div class="tweet">@{{tweet.user.screen_name}}</div>
+                        </div>
+                        <div class="body">
+                            <div><p>{{tweet.text}}</p></div>
+                        </div>
+                    <div class="row">
+                        <button class="ui labeled icon button" onclick="reply('{{tweet.id}}');">
+                          <i class="reply icon"></i>
+                          Reply
+                        </button>
+                        <button class="ui right labeled icon button" onclick="retweet('{{tweet.id}}');">
+                          <i class="retweet icon"></i>
+                          Retweet
+                        </button>
+                        <button class="ui right labeled icon button" onclick="like('{{tweet.id}}');">
+                          <i class="heart icon"></i>
+                          Like
+                        </button>
+                    </div>
+                   </div>
+                {% endfor %}
+            </div>
+            <div class="col-4">
+            <div class="ui attached message">
+                  <div class="header">
+                    Retweets of me
+                  </div>
+            </div>
+                {% for tweet in retweets%}
+                 <div class="ui message">
+                        <div class="header">
+                            <div class="tweet">@{{tweet.user.screen_name}}</div>
+                        </div>
+                        <div class="body">
+                            <div><p>{{tweet.text}}</p></div>
+                        </div>
+                    <div class="row">
+                        <button class="ui mini icon button" onclick="reply('{{tweet.id}}');">
+                          <i class="reply icon"></i>
+                        </button>
+                        <button class="ui mini icon button" onclick="retweet('{{tweet.id}}');">
+                          <i class="retweet icon"></i>
+                        </button>
+                        <button class="ui mini icon button" onclick="like('{{tweet.id}}');">
+                          <i class="heart icon"></i>
+                        </button>
+                    </div>
+                   </div>
+                {% endfor %}
+            </div>
+        </div>     </div>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+ <!-- Graphs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script>
+  </script>
+
+    <script>
+    /* get count ajax function */
+    function reply(id){
+        let text = prompt("Please Enter your reply")
+        console.log(id);
+        $.ajax({
+              url: "/reply/"+id,
+              data:{'text':text},
+              success: function(resp){
+                location.reload(true)
+                console.log(resp);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    function retweet(id){
+        $.ajax({
+              url: "/retweet/"+id,
+              success: function(resp){
+                location.reload(true)
+                console.log(resp);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    function like(id){
+        $.ajax({
+              url: "/like/"+id,
+              success: function(resp){
+                location.reload(true)
+                console.log(resp);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    function update_status(){
+        let text = $('#status_text').val()
+        console.log(text);
+        $.ajax({
+              url: "/update_status",
+              data:{'text':text},
+              success: function(resp){
+
+                location.reload(true)
+                console.log(resp);
+              },
+              error:function(resp){
+                console.log(resp);
+              }
+          });
+    }
+    </script>
+  </body>
+</html>
